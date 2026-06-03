@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/data";
+import { sendPushToUsers } from "@/lib/push";
 import { createClient } from "@/lib/supabase/server";
 import { conversionSchema, incomeSchema, transactionSchema } from "@/lib/validations";
 
@@ -22,6 +23,11 @@ export async function postTransactionAction(_: unknown, formData: FormData) {
   });
 
   if (error) return { ok: false, message: error.message };
+  await sendPushToUsers([parsed.data.customer_id], {
+    title: "CBS MASA transaction posted",
+    body: `${parsed.data.transaction_type === "credit" ? "Credited" : "Debited"} ₹${Number(parsed.data.amount).toLocaleString("en-IN")} in your ${parsed.data.account_type} account.`,
+    url: "/customer",
+  });
   revalidatePath("/manager");
   revalidatePath("/manager/transactions");
   return { ok: true, message: "Transaction posted successfully.", data };

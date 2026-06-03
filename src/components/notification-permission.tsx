@@ -7,6 +7,7 @@ import { registerFcmTokenAction } from "@/app/actions/profile";
 
 export function NotificationPermission() {
   const [visible, setVisible] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     const syncPermissionBanner = () => {
@@ -39,18 +40,48 @@ export function NotificationPermission() {
       <button
         className="btn-primary"
         type="button"
+        disabled={busy}
         onClick={async () => {
-          const permission = await Notification.requestPermission();
-          if (permission === "granted") {
-            const token = crypto.randomUUID();
-            const result = await registerFcmTokenAction(token);
+          setBusy(true);
+          try {
+            const vapidKey = process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY;
+            if (!vapidKey) {
+              toast.error("Push alert key is not configured. Add NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY in Vercel.");
+              return;
+            }
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") return;
+
+            if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+              toast.error("This browser does not support web push alerts.");
+              return;
+            }
+
+            const registration = await navigator.serviceWorker.register("/sw.js");
+            const existing = await registration.pushManager.getSubscription();
+            const subscription =
+              existing ??
+              (await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(vapidKey),
+              }));
+            const result = await registerFcmTokenAction(JSON.stringify(subscription));
             toast[result.ok ? "success" : "error"](result.message);
+            if (result.ok) setVisible(false);
+          } finally {
+            setBusy(false);
           }
-          setVisible(false);
         }}
       >
-        Enable
+        {busy ? "Enabling..." : "Enable"}
       </button>
     </div>
   );
+}
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = `${base64String}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
 }

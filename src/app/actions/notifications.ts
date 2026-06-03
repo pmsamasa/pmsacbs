@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/data";
+import { sendPushToUsers } from "@/lib/push";
 import { createClient } from "@/lib/supabase/server";
 import { broadcastNotificationSchema } from "@/lib/validations";
 
@@ -23,6 +24,11 @@ export async function sendBroadcastNotificationAction(_: unknown, formData: Form
   });
 
   if (error) return { ok: false, message: error.message };
+  const { data: customers } = await supabase.from("profiles").select("id").eq("role", "customer");
+  await sendPushToUsers(
+    (customers ?? []).map((customer) => customer.id),
+    { title: parsed.data.title, body: parsed.data.body, url: "/notifications" },
+  );
   revalidatePath("/notifications");
   return { ok: true, message: "Alert sent to all customers." };
 }

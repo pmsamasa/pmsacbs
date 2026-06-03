@@ -64,9 +64,16 @@ button:disabled {
 .glass-card {
   border: 1px solid rgb(6 45 36 / 0.1);
   border-radius: 1.25rem;
-  background: linear-gradient(145deg, rgb(255 255 255 / 0.86), rgb(244 255 249 / 0.72));
-  box-shadow: 0 18px 50px rgb(6 45 36 / 0.1);
-  backdrop-filter: blur(20px);
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.94), rgb(244 255 249 / 0.88));
+  box-shadow: 0 12px 30px rgb(6 45 36 / 0.08);
+}
+
+@media (min-width: 768px) {
+  .glass-card {
+    background: linear-gradient(145deg, rgb(255 255 255 / 0.86), rgb(244 255 249 / 0.72));
+    box-shadow: 0 18px 50px rgb(6 45 36 / 0.1);
+    backdrop-filter: blur(20px);
+  }
 }
 
 .section-title {
@@ -159,6 +166,7 @@ button:disabled {
 
 .table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 1.2rem;
   border: 1px solid rgb(6 45 36 / 0.1);
   background: rgb(255 255 255 / 0.72);
@@ -195,4 +203,3 @@ button:disabled {
   font-size: 0.75rem;
   font-weight: 750;
 }
-

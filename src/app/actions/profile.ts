@@ -22,6 +22,14 @@ export async function updateProfileAction(_: unknown, formData: FormData) {
 
 export async function registerFcmTokenAction(token: string) {
   const { user } = await requireRole(["customer", "manager", "head"]);
+  try {
+    const parsed = JSON.parse(token) as { endpoint?: string; keys?: { p256dh?: string; auth?: string } };
+    if (!parsed.endpoint || !parsed.keys?.p256dh || !parsed.keys?.auth) {
+      return { ok: false, message: "Notification subscription is incomplete. Please try again." };
+    }
+  } catch {
+    return { ok: false, message: "Notification subscription is invalid. Please try again." };
+  }
   const supabase = await createClient();
   const { error } = await supabase.from("fcm_tokens").upsert({ user_id: user!.id, token, platform: "web" }, { onConflict: "token" });
   return { ok: !error, message: error?.message ?? "Alerts enabled." };
