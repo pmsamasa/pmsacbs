@@ -130,7 +130,39 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
             <select className="input" name="sort" defaultValue={sort}><option value="total_desc">Total high to low</option><option value="total_asc">Total low to high</option><option value="cic_asc">CIC low to high</option><option value="cic_desc">CIC high to low</option></select>
             <button className="btn-primary"><Filter className="size-4" /> Filter</button>
           </form>
-          <div className="table-wrap">
+          <div className="mobile-list md:hidden">
+            {customers.map((customer, index) => {
+              const total = customerTotal(customer);
+              return (
+                <article className="mobile-record" key={customer.id}>
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-emerald-600">SN {index + 1}</p>
+                      <h3 className="mt-1 font-semibold text-emerald-950">{customer.name || "Unnamed customer"}</h3>
+                      <p className="text-sm text-emerald-700">CIC {customer.cic_no}</p>
+                    </div>
+                    <p className="rounded-2xl bg-emerald-50 px-3 py-2 text-right text-sm font-semibold text-emerald-900">{formatINR(total)}</p>
+                  </div>
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    <span className="badge">{customer.class_name || "No class"}</span>
+                    {customer.customer_accounts?.map((account) => <span className="badge" key={account.id}>{account.account_type}</span>)}
+                  </div>
+                  <ActionForm action={updateCustomerAction} submitLabel="Save changes" className="grid gap-2">
+                    <input type="hidden" name="customer_id" value={customer.id} />
+                    <input className="input" name="name" defaultValue={customer.name ?? ""} placeholder="Name" />
+                    <select className="input" name="class_name" defaultValue={customer.class_name ?? ""}><option value="">Class</option>{classOptions.map((className) => <option key={className} value={className}>{className}</option>)}</select>
+                  </ActionForm>
+                  <div className="mt-3 flex justify-end">
+                    <ConfirmActionForm action={deleteCustomerAction} confirmation={`DELETE ${customer.id}`} buttonLabel="Delete" title={`Delete ${customer.name || customer.cic_no}`} disabled={total > 0} danger>
+                      <input type="hidden" name="customer_id" value={customer.id} />
+                    </ConfirmActionForm>
+                  </div>
+                </article>
+              );
+            })}
+            {!customers.length ? <div className="mobile-record text-sm text-emerald-700">No customers found.</div> : null}
+          </div>
+          <div className="table-wrap hidden md:block">
             <table className="ledger-table">
               <thead><tr><th>SN</th><th>Name</th><th>CIC</th><th>Class</th><th>Accounts</th><th>Total</th><th>Actions</th></tr></thead>
               <tbody>

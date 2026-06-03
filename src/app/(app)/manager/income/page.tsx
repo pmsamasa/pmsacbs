@@ -50,7 +50,7 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
           note: row.note || "",
         }))} />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <MetricCard label="Income credited" value={credit} icon={HandCoins} />
         <MetricCard label="Income debited" value={debit} icon={HandCoins} tone="red" />
         <MetricCard label="Income balance" value={credit - debit} icon={HandCoins} tone="gold" />
@@ -101,7 +101,26 @@ export default async function IncomePage({ searchParams }: { searchParams: Promi
             <input className="input" name="to" type="date" defaultValue={params.to ?? ""} />
             <button className="btn-primary md:col-span-3"><Filter className="size-4" /> Filter income</button>
           </form>
-          <div className="table-wrap"><table className="ledger-table"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Method</th><th>Amount</th><th>Note</th></tr></thead><tbody>
+          <div className="mobile-list md:hidden">
+            {rows.map((row) => (
+              <article className="mobile-record" key={row.id}>
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-emerald-950">{row.category}</h3>
+                    <p className="text-xs text-emerald-600">{formatKolkataDate(row.created_at)}</p>
+                  </div>
+                  <p className={row.entry_type === "debit" ? "font-semibold text-red-700" : "font-semibold text-emerald-700"}>{formatINR(row.amount)}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="badge">{row.entry_type}</span>
+                  <span className="badge">{row.method}</span>
+                </div>
+                {row.note ? <p className="mt-3 rounded-xl bg-white/80 p-3 text-sm text-emerald-700">{row.note}</p> : null}
+              </article>
+            ))}
+            {!rows.length ? <div className="mobile-record text-sm text-emerald-700">No income entries found.</div> : null}
+          </div>
+          <div className="table-wrap hidden md:block"><table className="ledger-table"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Method</th><th>Amount</th><th>Note</th></tr></thead><tbody>
             {rows.map((row) => <tr key={row.id}><td>{formatKolkataDate(row.created_at)}</td><td>{row.entry_type}</td><td>{row.category}</td><td>{row.method}</td><td>{formatINR(row.amount)}</td><td>{row.note}</td></tr>)}
             {!rows.length ? <tr><td colSpan={6}>No income entries found.</td></tr> : null}
           </tbody></table></div>

@@ -47,7 +47,7 @@ export default async function IndividualPage({ searchParams }: { searchParams: P
               <UserRound className="size-8 text-gold-600" />
             </div>
           </section>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <MetricCard label="Total balance" value={balance} icon={Banknote} />
             <MetricCard label="Total credited" value={credited} icon={TrendingUp} tone="gold" />
             <MetricCard label="Total debited" value={debited} icon={TrendingDown} tone="red" />
@@ -73,7 +73,28 @@ export default async function IndividualPage({ searchParams }: { searchParams: P
           </section>
           <section className="glass-card p-5">
             <h2 className="mb-4 text-lg font-semibold">Full transaction history</h2>
-            <div className="table-wrap">
+            <div className="mobile-list md:hidden">
+              {transactions?.map((row, index) => (
+                <article className="mobile-record" key={row.id}>
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-emerald-600">SN {index + 1}</p>
+                      <h3 className="mt-1 font-semibold text-emerald-950">{transactionTypeLabel(row.transaction_type)}</h3>
+                      <p className="text-xs text-emerald-600">{formatKolkataDate(row.created_at)}</p>
+                    </div>
+                    <p className={row.transaction_type === "debit" ? "font-semibold text-red-700" : "font-semibold text-emerald-700"}>{formatINR(row.amount)}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="mobile-record-row"><span className="mobile-record-label">Account</span><span className="mobile-record-value">{row.account_type}</span></div>
+                    <div className="mobile-record-row"><span className="mobile-record-label">Method</span><span className="mobile-record-value">{row.transaction_type === "opening_balance" ? "carry forward" : row.method}</span></div>
+                    <div className="mobile-record-row"><span className="mobile-record-label">Balance after</span><span className="mobile-record-value">{formatINR(row.balance_after)}</span></div>
+                    <div className="mobile-record-row"><span className="mobile-record-label">Note</span><span className="mobile-record-value">{row.note || "-"}</span></div>
+                  </div>
+                </article>
+              ))}
+              {!transactions?.length ? <div className="mobile-record text-sm text-emerald-700">No transactions for this customer.</div> : null}
+            </div>
+            <div className="table-wrap hidden md:block">
               <table className="ledger-table">
                 <thead><tr><th>SN</th><th>Date</th><th>Account</th><th>Type</th><th>Method</th><th>Amount</th><th>Balance after</th><th>Note</th></tr></thead>
                 <tbody>

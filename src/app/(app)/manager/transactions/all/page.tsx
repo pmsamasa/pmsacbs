@@ -38,7 +38,30 @@ export default async function AllTransactionsPage({ searchParams }: { searchPara
         <button className="btn-primary md:col-span-2">Apply filters</button>
       </form>
       <section className="glass-card p-5">
-        <div className="table-wrap">
+        <div className="mobile-list md:hidden">
+          {filtered.map((row, index) => (
+            <article className="mobile-record" key={row.id}>
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-emerald-600">SN {index + 1}</p>
+                  <h3 className="mt-1 font-semibold text-emerald-950">{row.profiles?.name || row.profiles?.cic_no || "Deleted customer"}</h3>
+                  <p className="text-xs text-emerald-600">{formatKolkataDate(row.created_at)}</p>
+                </div>
+                <p className={row.transaction_type === "debit" ? "text-right font-semibold text-red-700" : "text-right font-semibold text-emerald-700"}>{formatINR(row.amount)}</p>
+              </div>
+              <div className="space-y-2">
+                <div className="mobile-record-row"><span className="mobile-record-label">Class</span><span className="mobile-record-value">{row.profiles?.class_name || "-"}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Account</span><span className="mobile-record-value">{row.account_type}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Type</span><span className="mobile-record-value">{transactionTypeLabel(row.transaction_type)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Method</span><span className="mobile-record-value">{row.transaction_type === "opening_balance" ? "carry forward" : row.method}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Balance after</span><span className="mobile-record-value">{formatINR(row.balance_after)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Note</span><span className="mobile-record-value">{row.note || "-"}</span></div>
+              </div>
+            </article>
+          ))}
+          {!filtered.length ? <div className="mobile-record text-sm text-emerald-700">No transactions found.</div> : null}
+        </div>
+        <div className="table-wrap hidden md:block">
           <table className="ledger-table">
             <thead><tr><th>SN</th><th>Date</th><th>Customer</th><th>Class</th><th>Account</th><th>Type</th><th>Method</th><th>Amount</th><th>Balance after</th><th>Note</th></tr></thead>
             <tbody>

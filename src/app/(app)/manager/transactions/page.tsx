@@ -102,11 +102,30 @@ export default async function TransactionsPage() {
             </ActionForm>
           </div>
           <div className="glass-card p-5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-lg font-semibold">Recent entries</h2>
-              <Link href="/manager/transactions/all" className="btn-secondary">Full list <ArrowRight className="size-4" /></Link>
+              <Link href="/manager/transactions/all" className="btn-secondary w-full sm:w-auto">Full list <ArrowRight className="size-4" /></Link>
             </div>
-            <div className="table-wrap">
+            <div className="mobile-list md:hidden">
+              {transactions?.map((row) => (
+                <article className="mobile-record" key={row.id}>
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="font-semibold text-emerald-950">{row.profiles?.name || row.profiles?.cic_no || "Deleted customer"}</h3>
+                      <p className="text-xs text-emerald-600">{formatKolkataDate(row.created_at)}</p>
+                    </div>
+                    <p className={row.transaction_type === "debit" ? "text-right font-semibold text-red-700" : "text-right font-semibold text-emerald-700"}>{formatINR(row.amount)}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="badge">{row.account_type}</span>
+                    <span className="badge">{transactionTypeLabel(row.transaction_type)}</span>
+                    <span className="badge">{row.transaction_type === "opening_balance" ? "carry forward" : row.method}</span>
+                  </div>
+                </article>
+              ))}
+              {!transactions?.length ? <div className="mobile-record text-sm text-emerald-700">No transactions posted.</div> : null}
+            </div>
+            <div className="table-wrap hidden md:block">
               <table className="ledger-table">
                 <thead><tr><th>Date</th><th>Customer</th><th>Account</th><th>Type</th><th>Method</th><th>Amount</th></tr></thead>
                 <tbody>
@@ -120,7 +139,26 @@ export default async function TransactionsPage() {
           </div>
           <div className="glass-card p-5">
             <h2 className="mb-4 text-lg font-semibold">Conversion status</h2>
-            <div className="table-wrap">
+            <div className="mobile-list md:hidden">
+              {conversions?.map((row) => (
+                <article className="mobile-record" key={row.id}>
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="font-semibold capitalize text-emerald-950">{row.from_method} to {row.to_method}</h3>
+                      <p className="text-xs text-emerald-600">{formatKolkataDate(row.created_at)}</p>
+                    </div>
+                    <p className="font-semibold text-emerald-900">{formatINR(row.amount)}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="mobile-record-row"><span className="mobile-record-label">Liquid after</span><span className="mobile-record-value">{formatINR(row.liquid_balance_after)}</span></div>
+                    <div className="mobile-record-row"><span className="mobile-record-label">Online after</span><span className="mobile-record-value">{formatINR(row.online_balance_after)}</span></div>
+                    <div className="mobile-record-row"><span className="mobile-record-label">Note</span><span className="mobile-record-value">{row.note || "-"}</span></div>
+                  </div>
+                </article>
+              ))}
+              {!conversions?.length ? <div className="mobile-record text-sm text-emerald-700">No conversions yet.</div> : null}
+            </div>
+            <div className="table-wrap hidden md:block">
               <table className="ledger-table">
                 <thead><tr><th>Date</th><th>From</th><th>To</th><th>Amount</th><th>Liquid after</th><th>Online after</th><th>Note</th></tr></thead>
                 <tbody>

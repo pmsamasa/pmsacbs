@@ -69,7 +69,24 @@ export default async function HandoverPage() {
       </section>
       <section className="glass-card p-5">
         <h2 className="mb-4 text-lg font-semibold">Period history</h2>
-        <div className="table-wrap"><table className="ledger-table"><thead><tr><th>Name</th><th>Status</th><th>Started</th><th>Ended</th><th>Opening</th><th>Closing</th><th>Transactions</th></tr></thead><tbody>
+        <div className="mobile-list md:hidden">
+          {periods?.map((period) => (
+            <article className="mobile-record" key={period.id}>
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <h3 className="font-semibold text-emerald-950">{period.name}</h3>
+                <span className="badge">{period.is_active ? "active" : "closed"}</span>
+              </div>
+              <div className="space-y-2">
+                <div className="mobile-record-row"><span className="mobile-record-label">Started</span><span className="mobile-record-value">{formatKolkataDate(period.started_at)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Ended</span><span className="mobile-record-value">{formatKolkataDate(period.ended_at)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Opening</span><span className="mobile-record-value">{formatINR(period.opening_total_balance)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Closing</span><span className="mobile-record-value">{formatINR(period.closing_total_balance)}</span></div>
+                <div className="mobile-record-row"><span className="mobile-record-label">Transactions</span><span className="mobile-record-value">{period.transaction_count}</span></div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="table-wrap hidden md:block"><table className="ledger-table"><thead><tr><th>Name</th><th>Status</th><th>Started</th><th>Ended</th><th>Opening</th><th>Closing</th><th>Transactions</th></tr></thead><tbody>
           {periods?.map((period) => <tr key={period.id}><td>{period.name}</td><td><span className="badge">{period.is_active ? "active" : "closed"}</span></td><td>{formatKolkataDate(period.started_at)}</td><td>{formatKolkataDate(period.ended_at)}</td><td>{formatINR(period.opening_total_balance)}</td><td>{formatINR(period.closing_total_balance)}</td><td>{period.transaction_count}</td></tr>)}
         </tbody></table></div>
       </section>
