@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fff9;
+  --foreground: #062d24;
+  --emerald-950: #062d24;
+  --emerald-900: #0b3b2e;
+  --emerald-800: #14513e;
+  --emerald-700: #1c6a4f;
+  --emerald-100: #dff7ea;
+  --gold-700: #9a6a03;
+  --gold-600: #b98306;
+  --gold-500: #d69b11;
+  --gold-200: #f7df8a;
+  --gold-100: #fff2bf;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-emerald-950: var(--emerald-950);
+  --color-emerald-900: var(--emerald-900);
+  --color-emerald-800: var(--emerald-800);
+  --color-emerald-700: var(--emerald-700);
+  --color-emerald-100: var(--emerald-100);
+  --color-gold-700: var(--gold-700);
+  --color-gold-600: var(--gold-600);
+  --color-gold-500: var(--gold-500);
+  --color-gold-200: var(--gold-200);
+  --color-gold-100: var(--gold-100);
+  --shadow-soft: 0 18px 50px rgb(6 45 36 / 0.12);
+  --shadow-glow: 0 12px 30px rgb(214 155 17 / 0.25);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.glass-card {
+  border: 1px solid rgb(6 45 36 / 0.1);
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.86), rgb(244 255 249 / 0.72));
+  box-shadow: 0 18px 50px rgb(6 45 36 / 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.section-title {
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 750;
+  letter-spacing: 0;
+  color: var(--emerald-950);
+}
+
+.section-subtitle {
+  max-width: 56rem;
+  color: var(--emerald-700);
+  font-size: 0.95rem;
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid rgb(11 59 46 / 0.16);
+  background: rgb(255 255 255 / 0.86);
+  padding: 0.78rem 0.9rem;
+  color: var(--emerald-950);
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.input:focus {
+  border-color: var(--gold-500);
+  background: white;
+  box-shadow: 0 0 0 4px rgb(214 155 17 / 0.14);
+}
+
+.field-label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--emerald-800);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.btn-primary,
+.btn-secondary,
+.icon-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 750;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.btn-primary {
+  border: 1px solid rgb(6 45 36 / 0.18);
+  background: linear-gradient(135deg, #0b3b2e, #13714f);
+  color: white;
+  padding: 0.65rem 1rem;
+  box-shadow: 0 12px 26px rgb(11 59 46 / 0.22);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  border: 1px solid rgb(11 59 46 / 0.14);
+  background: white;
+  color: var(--emerald-900);
+  padding: 0.65rem 1rem;
+}
+
+.icon-button {
+  width: 2.5rem;
+  border: 1px solid rgb(11 59 46 / 0.12);
+  background: white;
+  color: var(--emerald-900);
+}
+
+.metric-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 1rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 1.2rem;
+  border: 1px solid rgb(6 45 36 / 0.1);
+  background: rgb(255 255 255 / 0.72);
+}
+
+.ledger-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.ledger-table th,
+.ledger-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgb(6 45 36 / 0.08);
+  font-size: 0.9rem;
+}
+
+.ledger-table th {
+  color: var(--emerald-700);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgb(6 45 36 / 0.12);
+  background: rgb(223 247 234 / 0.76);
+  padding: 0.25rem 0.6rem;
+  color: var(--emerald-800);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
